@@ -5,19 +5,19 @@ HealthCheck:
    #
    #Bit Flag masks
    #
-   OUTDATED: 0b00000001 
+   OUTDATED: 00000001 
    OUTDATED_ERR: 'The node has not been edited for six month'
-   HUMAN_BLOCK: 0b00000010 
+   HUMAN_BLOCK: 00000010 
    HUMAN_BLOCK_ERR: 'The node has been stagnant for an extended period due to human action needed'
-   DEP_BLOCK: 0b00000100
+   DEP_BLOCK: 00000100
    DEP_BLOCK_ERR: 'The node has a dependency that has health issues'
-   PLAT_MISS: 0b00001000 
+   PLAT_MISS: 00001000 
    PLAY_MISS_ERR: 'The node has no platforms or are outdated'
-   APROV_MISS: 0b00010000 
+   APROV_MISS: 00010000 
    APROVE_MISS_ERR: 'The node is retroactivly missing an approval'
-   ECAT_MISS: 0b00100000 
+   ECAT_MISS: 00100000 
    ECAT_MISS_ERR: 'The node is retro activly missing an eCat report/PMP'
-   CONTRA_DATA: 0b01000000
+   CONTRA_DATA: 01000000
    CONTRA_DATA_ERR: 'The node has contradicting data in it'
  
  
