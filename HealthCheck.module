@@ -18,12 +18,24 @@ function HealthCheck_cron(){
         //Get all data products
         $nids = \Drupal::entityQuery('node')->condition('type','product')->execute();
         $nodes = \Drupal\node\Entity\Node::loadMultiple($nids);
-        
+
+        //check for Human block due to approvals/review
         foreach($nodes as $node){
+            $epoch = $node->getChangedTime();
+            $nodeDate = new DateTime("@$epoch");
+            $currDate = new DateTime("now");
             switch($node->get('moderation_state')->getString()){
                 case 'draft': //check drafts every month
                     break;
                 case 'awaiting_project_lead_approval': //check lead approval every 2 weeks
+                    $currDate->sub(new DateInterval('P14D')); //curent time plus 14 days ie two weeks
+                    if($currDate > $nodeDate){
+                        \Drupal::logger('HealthChecker')->notice('ACTION NEEDED title: @title - Time: @time.',
+                            array(
+                                '@title' => $node->gettitle(),
+                                '@time' => $nodeDate->format('Y-m-d'),
+                        ));
+                    }
                     break;
                 case 'awaiting_branch_head_approval': //check branch head approval every 2 weeks
                     break;
