@@ -1,0 +1,40 @@
+<?php
+/**
+* @file
+* A health check module for scanning CMI system and doing bulk processes to report and correct bad health indicators
+* Auhtor: Alexis Harper
+* Date: 5/3/19
+ */
+
+use Drupal\Core\Entity\EntityInterface;
+
+
+/**
+ * Implements HOOK_cron()
+ * Runes processes at timed intervals
+ */
+function HealthCheck_cron(){    
+    //if (date('G')==0 && date('i')==00 && date('l')=="Monday") { //runs every monday
+        //Get all data products
+        $nids = \Drupal::entityQuery('node')->condition('type','product')->execute();
+        $nodes = \Drupal\node\Entpity\Node::loadMultiple($nids);
+        
+        foreach($nodes as $node){
+            switch($node->get('moderation_state')->getString()){
+                case 'draft': //check drafts every month
+                    break;
+                case 'awaiting_project_lead_approval': //check lead approval every 2 weeks
+                    break;
+                case 'awaiting_branch_head_approval': //check branch head approval every 2 weeks
+                    break;
+                case 'awaiting_publication': //check awaiting publication every 2 weeks
+                    break;
+                case 'published': //check existing content every 6 months
+                    break;
+
+
+            }
+        }
+
+        //}
+  }
