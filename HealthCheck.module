@@ -17,7 +17,7 @@ function HealthCheck_cron(){
     //if (date('G')==0 && date('i')==00 && date('l')=="Monday") { //runs every monday
         //Get all data products
         $nids = \Drupal::entityQuery('node')->condition('type','product')->execute();
-        $nodes = \Drupal\node\Entpity\Node::loadMultiple($nids);
+        $nodes = \Drupal\node\Entity\Node::loadMultiple($nids);
         
         foreach($nodes as $node){
             switch($node->get('moderation_state')->getString()){
