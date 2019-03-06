@@ -16,9 +16,11 @@ use Drupal\Core\Entity\EntityInterface;
 function HealthCheck_cron(){    
     //if (date('G')==0 && date('i')==00 && date('l')=="Monday") { //runs every monday
         //Get all data products
+        $config = \Drupal::config('HealthCheck.settings');
         $nids = \Drupal::entityQuery('node')->condition('type','product')->execute();
         $nodes = \Drupal\node\Entity\Node::loadMultiple($nids);
 
+ \Drupal::logger('HealthChecker')->debug('reached 1', []);
         //check for Human block due to approvals/review
         foreach($nodes as $node){
             $epoch = $node->getChangedTime();
@@ -29,13 +31,14 @@ function HealthCheck_cron(){
                     break;
                 case 'awaiting_project_lead_approval': //check lead approval every 2 weeks
                     $currDate->sub(new DateInterval('P14D')); //curent time plus 14 days ie two weeks
-                    if($currDate > $nodeDate){
+//temp removal due to constant modifications            if($currDate > $nodeDate){ //node needs action
                         \Drupal::logger('HealthChecker')->notice('ACTION NEEDED title: @title - Time: @time.',
                             array(
                                 '@title' => $node->gettitle(),
                                 '@time' => $nodeDate->format('Y-m-d'),
                         ));
-                    }
+                        approval_notify($node, $config);
+//temp removal                    }
                     break;
                 case 'awaiting_branch_head_approval': //check branch head approval every 2 weeks
                     break;
@@ -49,4 +52,41 @@ function HealthCheck_cron(){
         }
 
         //}
-  }
+}
+/**
+ * @alexharp
+ *
+ * FLOW:
+ * set flag
+ * assign responsible
+ * add reason
+ * send notification to view
+ */
+function approval_notify($node, $config){
+ \Drupal::logger('HealthChecker')->debug('reached 1', []);
+    if($config->get('HealthCheck.HUMAN_BLOCK') & $node->get('field_health_flags')){ //already has human block flag, check and add overdue
+        if(!$config->get('HealthCheck.OVERDUE_ACTION') & $node->get('field_health_flags')) //if overdue not set, set it
+            $node->set('field_health_flags', $node->get('field_health_flags') + $config->get('OVERDUE_ACTION'));
+    } else {
+ \Drupal::logger('HealthChecker')->debug('reached 2', []);
+        $node->set('field_health_flags', $node->get('field_health_flags') + $config->get('HealthCheck.HUMAN_BLOCK'));
+
+ \Drupal::logger('HealthChecker')->debug('reached 3', []);
+        switch($node->get('moderation_state')->getString()){
+            case 'awaiting_project_lead_approval': 
+ \Drupal::logger('HealthChecker')->debug('reached 3.1', []);
+                $node->set('field_health_remediater', $node->get('field_project_lead_')->getEntity());
+ \Drupal::logger('HealthChecker')->debug('reached 3.1.1', []);
+                break;
+            case 'awaiting_branch_head_approval': 
+ \Drupal::logger('HealthChecker')->debug('reached 3.2', []);
+                $node->set('field_health_remediater', $node->get('field_please_select_your_branch_')->getEntity());
+                break;
+        }
+ \Drupal::logger('HealthChecker')->debug('reached 4', []);
+        $node->field_health_action[] = $config->get('HealthCheck.APR_REV_REQUIRED');  
+        $node->field_health_action[] = $config->get('HealthCheck.REV_REQUIRED');  
+ \Drupal::logger('HealthChecker')->debug('reached 5', []);
+        $node->save();
+    }
+}
