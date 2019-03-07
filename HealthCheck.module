@@ -63,13 +63,15 @@ function HealthCheck_cron(){
  * send notification to view
  */
 function approval_notify($node, $config){
- \Drupal::logger('HealthChecker')->debug('reached 1', []);
+ \Drupal::logger('HealthChecker')->debug('reached 1 - flags are @flag', array( '@flag' => $node->get('field_health_flags')->getString()));
+        $f3 = $config->get('HealthCheck.HUMAN_BLOCK') | $config->get('HealthCheck.DEP_BLOCK');
+ \Drupal::logger('HealthChecker')->debug('string bitmask test @f1 + @f2 = @f3', array( '@f1' => $config->get('HealthCheck.HUMAN_BLOCK'), '@f2' => $config->get('HealthCheck.DEP_BLOCK'), '@f3' => $f3));
     if($config->get('HealthCheck.HUMAN_BLOCK') & $node->get('field_health_flags')){ //already has human block flag, check and add overdue
         if(!$config->get('HealthCheck.OVERDUE_ACTION') & $node->get('field_health_flags')) //if overdue not set, set it
             $node->set('field_health_flags', $node->get('field_health_flags') + $config->get('OVERDUE_ACTION'));
     } else {
- \Drupal::logger('HealthChecker')->debug('reached 2', []);
-        $node->set('field_health_flags', $node->get('field_health_flags') + $config->get('HealthCheck.HUMAN_BLOCK'));
+ \Drupal::logger('HealthChecker')->debug('reached 2 RES = %t', array( '%t' => $node->get('field_health_flags')->getString() | $config->get('HealthCheck.HUMAN_BLOCK')));
+        $node->set('field_health_flags', $node->get('field_health_flags')->getString() | $config->get('HealthCheck.HUMAN_BLOCK'));
 
  \Drupal::logger('HealthChecker')->debug('reached 3', []);
         switch($node->get('moderation_state')->getString()){
