@@ -66,11 +66,13 @@ function approval_notify($node, $config){
  \Drupal::logger('HealthChecker')->debug('reached 1 - flags are @flag', array( '@flag' => $node->get('field_health_flags')->getString()));
         $f3 = $config->get('HealthCheck.HUMAN_BLOCK') & $node->get('field_health_flags')->getString();
  \Drupal::logger('HealthChecker')->debug('string bitmask test @f1 + @f2 = @f3', array( '@f1' => $config->get('HealthCheck.HUMAN_BLOCK'), '@f2' => $node->get('field_health_flags')->getString() , '@f3' => $f3));
-    if($config->get('HealthCheck.HUMAN_BLOCK') & $node->get('field_health_flags')->getString() == $config->get('HealthCheck.HUMAN_BLOCK') ){ //already has human block flag, check and add overdue
- \Drupal::logger('HealthChecker')->debug('reached 1.1 already blocked', []);
-        if($config->get('HealthCheck.OVERDUE_ACTION') & $node->get('field_health_flags') != $config->get('HealthCheck.OVERDUE_ACTION') ){ //if overdue not set, set it
+    if($config->get('HealthCheck.HUMAN_BLOCK') & $node->get('field_health_flags')->getString()){ //already has human block flag, check and add overdue
+ \Drupal::logger('HealthChecker')->debug('reached 1.1 already blocked testing: %t1 & %t2 Res %t3', array('%t1' => ~$config->get('HealthCheck.OVERDUE_ACTION'), '%t2' => $node->get('field_health_flags')->getString(), '%t3' => ~$config->get('HealthCheck.OVERDUE_ACTION') & $node->get('field_health_flags')->getString())); //if overdue not set, set it
+        if(!$config->get('HealthCheck.OVERDUE_ACTION') & $node->get('field_health_flags')->getString()){ //if overdue not set, set it
  \Drupal::logger('HealthChecker')->debug('reached 1.1.1 already blocked not overdue', []);
             $node->set('field_health_flags', $node->get('field_health_flags')->getString() | $config->get('HealthCheck.OVERDUE_ACTION'));
+            $node->field_health_action[] = $config->get('HealthCheck.OVERDUE_ACTION_REQUIRED');  
+            $node->save();
         }
     } else {
  \Drupal::logger('HealthChecker')->debug('reached 2 RES = %t', array( '%t' => $node->get('field_health_flags')->getString() | $config->get('HealthCheck.HUMAN_BLOCK')));
@@ -87,10 +89,11 @@ function approval_notify($node, $config){
  \Drupal::logger('HealthChecker')->debug('reached 3.2', []);
                 $node->set('field_health_remediater', $node->get('field_please_select_your_branch_')->getEntity());
                 break;
+
         }
- \Drupal::logger('HealthChecker')->debug('reached 4 message is = %t1 \n %t2', array('%t1' => $config->get('HealthCheck.APR_REV_REQUIRED'), '%t2' => $config->get('HealthCheck.REV_REQUIRED')));
-        $node->field_health_action[] = $config->get('HealthCheck.APR_REV_REQUIRED');  
-        $node->field_health_action[] = $config->get('HealthCheck.REV_REQUIRED');  
+ \Drupal::logger('HealthChecker')->debug('reached 4 message is = %t1 \n %t2', array('%t1' => $config->get('HealthCheck.APR_REV_REQUIRED'), '%t2' => $config->get('HealthCheck.APR_REQUIRED')));
+            $node->field_health_action[] = $config->get('HealthCheck.APR_REV_REQUIRED');  
+            $node->field_health_action[] = $config->get('HealthCheck.APR_REQUIRED');  
  \Drupal::logger('HealthChecker')->debug('reached 5', []);
         $node->save();
     }

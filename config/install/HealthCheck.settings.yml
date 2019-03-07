@@ -5,30 +5,30 @@ HealthCheck:
    #
    #Bit Flag masks
    #
-   OUTDATED: '0b0000000001' 
+   OUTDATED: 1 
    OUTDATED_ERR: 'The node has not been edited for six month'
-   HUMAN_BLOCK: '0b0000000010' 
+   HUMAN_BLOCK: 2 
    HUMAN_BLOCK_ERR: 'The node has been stagnant for an extended period due to human action needed'
-   DEP_BLOCK: '0b0000000100'
+   DEP_BLOCK: 4
    DEP_BLOCK_ERR: 'The node has a dependency that has health issues'
-   PLAT_MISS: '0b0000001000' 
+   PLAT_MISS: 8 
    PLAY_MISS_ERR: 'The node has no platforms or are outdated'
-   APROV_MISS: '0b0000010000' 
+   APROV_MISS: 16 
    APROVE_MISS_ERR: 'The node is retroactively missing an approval'
-   ECAT_MISS: '0b0000100000' 
+   ECAT_MISS: 32 
    ECAT_MISS_ERR: 'The node is retroactively missing an eCat report/PMP'
-   REV_MISS: '0b0001000000'
+   REV_MISS: 64
    REV_MISS_ERR: 'The node is retroactively missing a rewview'
-   CONTRA_DATA: '0b0010000000'
+   CONTRA_DATA: 128
    CONTRA_DATA_ERR: 'The node has contradicting data in it'
-   OVERDUE_ACTION: '0b0100000000' 
+   OVERDUE_ACTION: 256 
    OVERDUE_ACTION_ERR: 'The node has had a health warning for over 1 week'
    #
    #Health Remediater actions
    #
    APR_REV_REQUIRED: 'The remediater needs to create a review for the product (http://cmi.ga.gov.au/node/add/approver_review)'
    APR_REQUIRED: 'The remediater needs to approve the product by scrolling down to the bottom of the prodduct page and moving it to the next stage' 
- 
+   OVERDUE_ACTION_REQUIRED: 'Required remedial action has not occured and is now overdue' 
 
 
 
