@@ -5,23 +5,23 @@ HealthCheck:
    #
    #Bit Flag masks
    #
-   OUTDATED: '0000000001' 
+   OUTDATED: '0b0000000001' 
    OUTDATED_ERR: 'The node has not been edited for six month'
-   HUMAN_BLOCK: '0000000010' 
+   HUMAN_BLOCK: '0b0000000010' 
    HUMAN_BLOCK_ERR: 'The node has been stagnant for an extended period due to human action needed'
-   DEP_BLOCK: '0000000100'
+   DEP_BLOCK: '0b0000000100'
    DEP_BLOCK_ERR: 'The node has a dependency that has health issues'
-   PLAT_MISS: '0000001000' 
+   PLAT_MISS: '0b0000001000' 
    PLAY_MISS_ERR: 'The node has no platforms or are outdated'
-   APROV_MISS: '0000010000' 
+   APROV_MISS: '0b0000010000' 
    APROVE_MISS_ERR: 'The node is retroactively missing an approval'
-   ECAT_MISS: '0000100000' 
+   ECAT_MISS: '0b0000100000' 
    ECAT_MISS_ERR: 'The node is retroactively missing an eCat report/PMP'
-   REV_MISS: '0001000000'
+   REV_MISS: '0b0001000000'
    REV_MISS_ERR: 'The node is retroactively missing a rewview'
-   CONTRA_DATA: '0010000000'
+   CONTRA_DATA: '0b0010000000'
    CONTRA_DATA_ERR: 'The node has contradicting data in it'
-   OVERDUE_ACTION: '0100000000' 
+   OVERDUE_ACTION: '0b0100000000' 
    OVERDUE_ACTION_ERR: 'The node has had a health warning for over 1 week'
    #
    #Health Remediater actions
