@@ -67,9 +67,14 @@ function approval_notify($node, $config){
         $f3 = $config->get('HealthCheck.HUMAN_BLOCK') & $node->get('field_health_flags')->getString();
  \Drupal::logger('HealthChecker')->debug('string bitmask test @f1 + @f2 = @f3', array( '@f1' => $config->get('HealthCheck.HUMAN_BLOCK'), '@f2' => $node->get('field_health_flags')->getString() , '@f3' => $f3));
     if($config->get('HealthCheck.HUMAN_BLOCK') & $node->get('field_health_flags')->getString()){ //already has human block flag, check and add overdue
- \Drupal::logger('HealthChecker')->debug('reached 1.1 already blocked testing: %t1 & %t2 Res %t3', array('%t1' => ~$config->get('HealthCheck.OVERDUE_ACTION'), '%t2' => $node->get('field_health_flags')->getString(), '%t3' => ~$config->get('HealthCheck.OVERDUE_ACTION') & $node->get('field_health_flags')->getString())); //if overdue not set, set it
-        if(!$config->get('HealthCheck.OVERDUE_ACTION') & $node->get('field_health_flags')->getString()){ //if overdue not set, set it
- \Drupal::logger('HealthChecker')->debug('reached 1.1.1 already blocked not overdue', []);
+
+ \Drupal::logger('HealthChecker')->debug('reached 1.1 already blocked, check for overdue testing: %t1 & %t2 Res %t3', array('%t1' => ~$config->get('HealthCheck.OVERDUE_ACTION'), '%t2' => $node->get('field_health_flags')->getString(), '%t3' => ~$config->get('HealthCheck.OVERDUE_ACTION') & $node->get('field_health_flags')->getString())); 
+
+        if($config->get('HealthCheck.OVERDUE_ACTION') & $node->get('field_health_flags')->getString()){ //if overdue not set, set it
+
+        } else {
+
+ \Drupal::logger('HealthChecker')->debug('reached 1.1.1 already blocked not overdu, setting it now', []);
             $node->set('field_health_flags', $node->get('field_health_flags')->getString() | $config->get('HealthCheck.OVERDUE_ACTION'));
             $node->field_health_action[] = $config->get('HealthCheck.OVERDUE_ACTION_REQUIRED');  
             $node->save();
